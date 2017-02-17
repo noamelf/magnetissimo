@@ -1,0 +1,22 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.6 # https://hub.docker.com/_/postgres/
+    volumes:
+      - postgres-db-volume:/data/postgres
+    environment:
+      - POSTGRES_DB=magnetissimo_dev
+      - POSTGRES_USER=torrent
+      - POSTGRES_PASSWORD=postgres-secret
+  web:
+    build: .
+    command: mix do compile, ecto.migrate, phoenix.server
+    environment:
+      - MIX_ENV=prod
+      - PORT=4000
+    ports:
+      - "4000:4000"
+    depends_on:
+        - db
+volumes:
+  postgres-db-volume:
